@@ -19,33 +19,45 @@ typedef long long ll;
 typedef pair<int, int> pii;
 const int INF=1e9+7;
 const ll INFLL=1e18+7;
+
 const int MOD = 1e9+7;
 
 
 int main(){
   FFIO;
 
-  int n, x; cin >> n >> x;
-  // solve(x, i) = solve(x - coins[i], i) + solve(x, i+1)
-  // solve(0,i) = 0, 0 <= i < n
-  int coins[n];
-  for(int i = 0; i < n; i++) cin >> coins[i];
-  ll dp[x+1];
-
-  fill(dp, dp+x+1, 0);
-  dp[0] = 1;
-
+  int n; cin >> n;
+  char map[n][n];
   for(int i = 0; i < n; i++){
-    for(int j = 0; j <= x; j++){
-      if(j + coins[i] <= x){
-        dp[j+coins[i]] += dp[j];
-        dp[j+coins[i]] %= MOD;
+    string l; cin >> l;
+    for(int j = 0; j < n; j++){
+      map[i][j] = l[j];
+    }
+  }
+
+  int dp[n+1][n+1];
+
+  if(map[n-1][n-1] == '.' && map[0][0] == '.')
+    dp[n-1][n-1] = 1;
+  else
+    dp[n-1][n-1] = 0;
+  
+  for(int i = n-1; i >= 0; i--){
+    for(int j = n-1; j >= 0; j--){
+      if(i == n-1 && j == n-1) continue;
+
+      dp[i][j] = 0;
+      if(i+1 < n && map[i+1][j] == '.'){
+        dp[i][j] += dp[i+1][j];
+        dp[i][j] %= MOD;
+      }
+      if(j+1 < n && map[i][j+1] == '.'){
+        dp[i][j] += dp[i][j+1];
+        dp[i][j] %= MOD;
       }
     }
   }
-  cout << dp[x] << '\n';
-
-
+  cout << dp[0][0] << '\n';
 }
 
 

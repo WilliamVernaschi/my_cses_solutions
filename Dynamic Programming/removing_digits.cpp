@@ -19,31 +19,42 @@ typedef long long ll;
 typedef pair<int, int> pii;
 const int INF=1e9+7;
 const ll INFLL=1e18+7;
-const int MOD = 1e9+7;
 
 
 int main(){
   FFIO;
 
-  int n, x; cin >> n >> x;
-  // solve(x, i) = solve(x - coins[i], i) + solve(x, i+1)
-  // solve(0,i) = 0, 0 <= i < n
-  int coins[n];
-  for(int i = 0; i < n; i++) cin >> coins[i];
-  ll dp[x+1];
+  int distance[(int)1e6+5];
 
-  fill(dp, dp+x+1, 0);
-  dp[0] = 1;
+  int nn; cin >> nn;
 
-  for(int i = 0; i < n; i++){
-    for(int j = 0; j <= x; j++){
-      if(j + coins[i] <= x){
-        dp[j+coins[i]] += dp[j];
-        dp[j+coins[i]] %= MOD;
+  fill(distance, distance+nn, 0);
+
+  auto bfs = [&](int n){
+    distance[n] = 1;
+    queue<int> q;
+    q.push(n);
+    while(!q.empty()){
+      
+      int nc1 = q.front();
+      int nc2 = nc1;
+
+      q.pop();
+      while(nc2){
+        if(!distance[nc1 - nc2%10]){
+          distance[nc1 - nc2%10] = distance[nc1] + 1;
+          if(nc1 - nc2%10 == 0){
+            return distance[nc1 - nc2%10]-1;
+          }
+          q.push(nc1 - nc2%10);
+        }
+        nc2 /= 10;
       }
     }
-  }
-  cout << dp[x] << '\n';
+    return -1;
+  };
+
+  cout << bfs(nn) << '\n';
 
 
 }
